@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../utils/style/app_color.dart';
+import '../../../utils/style/app_dimen.dart';
+import '../controller/splash_controller.dart';
+import '../widget/splash_logo.dart';
 
 class SplashView extends StatelessWidget {
   // this name string should be unique. otherwise app may not work properly
@@ -7,8 +13,27 @@ class SplashView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
+    // final controller =  Get.lazyPut<SplashController>(() => SplashController());
+    final controller = Get.put(SplashController());
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kBackgroundColor,
+        toolbarHeight: 0,
+      ),
+      backgroundColor: kBackgroundColor,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          SplashLogo(),
+          Positioned(
+            bottom: kHeight * 10,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 1.0,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
