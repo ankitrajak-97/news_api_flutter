@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'routes/app_route.dart';
@@ -14,17 +15,26 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'News Api',
-      getPages: getPages,
-      initialRoute: SplashView.name,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF37ecba),
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
+    return ScreenUtilInit(
+      designSize: const Size(411, 876),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      useInheritedMediaQuery: true,
+      builder: (context, child) {
+        return GetMaterialApp(
+          title: 'News Api',
+          getPages: getPages,
+          initialRoute: SplashView.name,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: Color(0xFF37ecba),
+            ),
+          ),
+          debugShowCheckedModeBanner: false,
+        );
+      },
+      // child: const SplashView(),
     );
   }
 }

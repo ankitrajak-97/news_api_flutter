@@ -8,7 +8,7 @@ class BaseResponse {
   @JsonKey(name: 'status')
   final String? status;
 
-  @JsonKey(name: 'totalResult')
+  @JsonKey(name: 'totalResults')
   final int? resultCount;
 
   @JsonKey(name: 'articles')

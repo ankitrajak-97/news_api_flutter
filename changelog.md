@@ -8,3 +8,11 @@ version: 1.0.0+1
 - MVC pattern padded
 - api call integrated
 - home list item added
+- observable added in home page
+- now you can choose different categories of news
+- everything is not dynamic
+
+TODO:
+- add publish at time in each list item
+- create a button in each list item. ON click open google chrome with the given url.
+- try to change country with a dropdown. so that anyone can change it based on their choice.
