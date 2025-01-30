@@ -10,7 +10,14 @@ import '../../../api/model/base/base_response.dart';
 
 class HomeController extends GetxController {
   final _api = ApiAdapter();
-  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports'];
+  final chipList = [
+    'business',
+    'entertainment',
+    'health',
+    'science',
+    'general',
+    'sports'
+  ];
 
   final selectedChipText = ''.obs;
 
@@ -35,7 +42,7 @@ class HomeController extends GetxController {
     super.onReady();
     log("controller onReady");
 
-    await fetchHeeadlines();
+    await fetchHeadlines();
 
     // to handle db operation or api calls only if required
   }
@@ -49,17 +56,31 @@ class HomeController extends GetxController {
 
   Future<void> updateSelectedChipList({required String selectedChip}) async {
     selectedChipText.value = selectedChip;
-    await fetchHeeadlines();
+    await fetchHeadlines();
   }
 
-  Future<void> fetchHeeadlines() async {
+  Future<void> fetchHeadlines() async {
     isLoading.value = true;
     final queryParams = {
       "country": "us",
       "category": selectedChipText.value,
       "apiKey": kAPIKey,
     };
+    var response = await _userRegistrationApiCall(queryParams);
+    if (response != null) {
+      articles.assignAll(response.articleList);
+      response.resultCount;
+    }
+    isLoading.value = false;
+  }
 
+  Future<void> fetchEverything() async {
+    isLoading.value = true;
+    final queryParams = {
+      // "country": "us",
+      // "category": selectedChipText.value,
+      "apiKey": kAPIKey,
+    };
     var response = await _userRegistrationApiCall(queryParams);
     if (response != null) {
       articles.assignAll(response.articleList);
@@ -74,7 +95,8 @@ class HomeController extends GetxController {
     try {
       response = await _api.getHeadlines(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}",
+          name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;

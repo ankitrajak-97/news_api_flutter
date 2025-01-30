@@ -15,7 +15,7 @@ class SplashController extends GetxController {
     super.onReady();
     log("controller onReady");
 
-    await Future.delayed(5.seconds, () {
+    await Future.delayed(2.seconds, () {
       // go to home page
       // Get.to(() => HomeView()); class based approach
 

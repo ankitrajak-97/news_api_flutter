@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_api/dropdown/dropdowncontroller.dart';
 import 'package:news_api/ui/home/widget/home_loader.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
@@ -19,6 +20,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     // final controller =  Get.lazyPut<SplashController>(() => SplashController());
     final controller = Get.put(HomeController());
+    final DropdownController dropdownController = Get.put(DropdownController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
@@ -32,17 +34,37 @@ class HomeView extends StatelessWidget {
             children: [
               // heading
               Container(
+                color: Colors.indigo,
                 width: Get.width,
                 height: Get.height * 0.1,
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.symmetric(horizontal: kWidth * 2),
-                child: Text(
-                  "Headlines",
-                  style: GoogleFonts.nanumGothic(
-                    color: Colors.white54,
-                    fontSize: 28.0.sp,
-                    fontWeight: FontWeight.w900,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Headlines",
+                      style: GoogleFonts.nanumGothic(
+                        color: Colors.white54,
+                        fontSize: 28.0.sp,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    Obx(() => DropdownButton<String>(
+                          value: dropdownController
+                              .selectedValue.value, // GetX state
+                          hint: Text("Select Country"),
+                          items: dropdownController.dropDownList
+                              .map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged:
+                              dropdownController.setSelected, // Update value
+                        )),
+                  ],
                 ),
               ),
               // SizedBox(
@@ -69,7 +91,8 @@ class HomeView extends StatelessWidget {
                       return HomeChip(
                         chipTitle: title,
                         onTap: () {
-                          controller.updateSelectedChipList(selectedChip: title);
+                          controller.updateSelectedChipList(
+                              selectedChip: title);
                         },
                       );
                     },
@@ -111,16 +134,22 @@ class HomeView extends StatelessWidget {
                           )
                         : ListView.separated(
                             itemBuilder: (context, index) {
-                              final imageUrl = controller.articles[index].urlImg;
+                              final imageUrl =
+                                  controller.articles[index].urlImg;
                               final author = controller.articles[index].author;
                               final title = controller.articles[index].title;
                               final desc = controller.articles[index].desc;
+                              final publishedAt =
+                                  controller.articles[index].publishedAt;
+                              final url = controller.articles[index].url;
 
                               return HomeListItem(
                                 imageUrl: imageUrl,
                                 author: author,
                                 title: title,
                                 desc: desc,
+                                publishedAt: publishedAt,
+                                url: url,
                               );
                             },
                             separatorBuilder: (context, index) {
@@ -148,7 +177,5 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-
-
 
 // https://thehill.com/wp-content/uploads/sites/2/2025/01/Screenshot-2025-01-26-at-8.27.00 AM.png?w=1280

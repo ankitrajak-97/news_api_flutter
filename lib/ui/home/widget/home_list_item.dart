@@ -2,20 +2,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeListItem extends StatelessWidget {
   final String? imageUrl;
   final String? author;
   final String? title;
   final String? desc;
+  final String? publishedAt;
+  final String? url;
 
-  const HomeListItem({
-    super.key,
-    required this.imageUrl,
-    required this.author,
-    required this.title,
-    required this.desc,
-  });
+  void _launchURL(BuildContext context) async {
+    if (url != null && url!.isNotEmpty) {
+      print("Attempting to launch: $url");
+      final Uri uri = Uri.parse(url!);
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        print("Could not launch URL: $url");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch URL')),
+        );
+      }
+    }
+  }
+
+  const HomeListItem(
+      {super.key,
+      required this.imageUrl,
+      required this.author,
+      required this.title,
+      required this.desc,
+      required this.publishedAt,
+      required this.url});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +43,7 @@ class HomeListItem extends StatelessWidget {
       children: [
         Expanded(
           flex: 2,
-          child: SizedBox(
+          child: Container(
             width: kWidth * 4,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +64,8 @@ class HomeListItem extends StatelessWidget {
                         imageUrl ?? "",
                         fit: BoxFit.cover,
                         // Frame builder to add custom behavior when the image frame is loaded
-                        frameBuilder: (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+                        frameBuilder: (BuildContext context, Widget child,
+                            int? frame, bool wasSynchronouslyLoaded) {
                           if (wasSynchronouslyLoaded) {
                             return child;
                           }
@@ -55,20 +76,23 @@ class HomeListItem extends StatelessWidget {
                           );
                         },
                         // Loading builder to show a loader while the image is being fetched
-                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
                           if (loadingProgress == null) {
                             return child;
                           }
                           return Center(
                             child: CircularProgressIndicator(
                               value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
                                   : null,
                             ),
                           );
                         },
                         // Error builder to handle any errors while fetching the image
-                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
                           return Center(
                             child: Icon(
                               Icons.error,
@@ -101,7 +125,7 @@ class HomeListItem extends StatelessWidget {
         Expanded(
           flex: 5,
           child: Padding(
-            padding: const EdgeInsets.all(kPadding),
+            padding: EdgeInsets.all(kHeight),
             child: Column(
               children: [
                 Text(
@@ -128,6 +152,33 @@ class HomeListItem extends StatelessWidget {
                   softWrap: true,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(kHeight),
+                  child: Text(
+                    'Published at :  $publishedAt',
+                    style: GoogleFonts.roboto(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: Colors.white),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(kHeight),
+                  child: GestureDetector(
+                    onTap: () => _launchURL(context),
+                    child: Text(
+                      '$url',
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
