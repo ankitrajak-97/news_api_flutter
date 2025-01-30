@@ -11,6 +11,7 @@ version: 1.0.0+1
 - observable added in home page
 - now you can choose different categories of news
 - everything is not dynamic
+- home page ui refactor (datetime added, author text updated, url launcher added)
 
 TODO:
 - add publish at time in each list item

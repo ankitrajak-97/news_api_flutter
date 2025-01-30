@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:news_api/dropdown/dropdowncontroller.dart';
 import 'package:news_api/ui/home/widget/home_loader.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/style/app_color.dart';
 import '../controller/home_controller.dart';
@@ -20,7 +20,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     // final controller =  Get.lazyPut<SplashController>(() => SplashController());
     final controller = Get.put(HomeController());
-    final DropdownController dropdownController = Get.put(DropdownController());
+    // final DropdownController dropdownController = Get.put(DropdownController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
@@ -34,7 +34,6 @@ class HomeView extends StatelessWidget {
             children: [
               // heading
               Container(
-                color: Colors.indigo,
                 width: Get.width,
                 height: Get.height * 0.1,
                 alignment: Alignment.centerLeft,
@@ -50,20 +49,20 @@ class HomeView extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Obx(() => DropdownButton<String>(
-                          value: dropdownController
-                              .selectedValue.value, // GetX state
-                          hint: Text("Select Country"),
-                          items: dropdownController.dropDownList
-                              .map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged:
-                              dropdownController.setSelected, // Update value
-                        )),
+                    // Obx(() => DropdownButton<String>(
+                    //       value: dropdownController
+                    //           .selectedValue.value, // GetX state
+                    //       hint: Text("Select Country"),
+                    //       items: dropdownController.dropDownList
+                    //           .map((String value) {
+                    //         return DropdownMenuItem<String>(
+                    //           value: value,
+                    //           child: Text(value),
+                    //         );
+                    //       }).toList(),
+                    //       onChanged:
+                    //           dropdownController.setSelected, // Update value
+                    //     )),
                   ],
                 ),
               ),
@@ -91,8 +90,7 @@ class HomeView extends StatelessWidget {
                       return HomeChip(
                         chipTitle: title,
                         onTap: () {
-                          controller.updateSelectedChipList(
-                              selectedChip: title);
+                          controller.updateSelectedChipList(selectedChip: title);
                         },
                       );
                     },
@@ -124,23 +122,19 @@ class HomeView extends StatelessWidget {
                       child: HomeLoader(),
                     ),
                     child: controller.articles.isEmpty
-                        ? Container(
-                            child: Text(
-                              "No Data found. Try again",
-                              style: GoogleFonts.nunito(
-                                color: Colors.white,
-                              ),
+                        ? Text(
+                            "No Data found. Try again",
+                            style: GoogleFonts.nunito(
+                              color: Colors.white,
                             ),
                           )
                         : ListView.separated(
                             itemBuilder: (context, index) {
-                              final imageUrl =
-                                  controller.articles[index].urlImg;
+                              final imageUrl = controller.articles[index].urlImg;
                               final author = controller.articles[index].author;
                               final title = controller.articles[index].title;
                               final desc = controller.articles[index].desc;
-                              final publishedAt =
-                                  controller.articles[index].publishedAt;
+                              final publishedAt = controller.articles[index].publishedAt;
                               final url = controller.articles[index].url;
 
                               return HomeListItem(
@@ -150,6 +144,13 @@ class HomeView extends StatelessWidget {
                                 desc: desc,
                                 publishedAt: publishedAt,
                                 url: url,
+                                onIconButtonClick: () async {
+                                  final Uri url = Uri.parse("https://www.google.com");
+
+                                  if (!await launchUrl(url)) {
+                                    throw Exception('Could not launch $url');
+                                  }
+                                },
                               );
                             },
                             separatorBuilder: (context, index) {
