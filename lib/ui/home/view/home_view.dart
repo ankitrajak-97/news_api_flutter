@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../utils/style/app_color.dart';
 import '../controller/home_controller.dart';
 import '../widget/home_chip.dart';
+import '../widget/home_country_chip.dart';
 import '../widget/home_list_item.dart';
 
 class HomeView extends StatelessWidget {
@@ -49,6 +50,12 @@ class HomeView extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
+
+                    HomeCountryChip(
+                      onCountryButtonClick: () {
+                        Get.toNamed('/country');
+                      },
+                    )
                     // Obx(() => DropdownButton<String>(
                     //       value: dropdownController
                     //           .selectedValue.value, // GetX state
@@ -135,7 +142,7 @@ class HomeView extends StatelessWidget {
                               final title = controller.articles[index].title;
                               final desc = controller.articles[index].desc;
                               final publishedAt = controller.articles[index].publishedAt;
-                              final url = controller.articles[index].url;
+                              final url = controller.articles[index].url ?? "https://www.google.com";
 
                               return HomeListItem(
                                 imageUrl: imageUrl,
@@ -145,9 +152,8 @@ class HomeView extends StatelessWidget {
                                 publishedAt: publishedAt,
                                 url: url,
                                 onIconButtonClick: () async {
-                                  final Uri url = Uri.parse("https://www.google.com");
-
-                                  if (!await launchUrl(url)) {
+                                  final link = Uri.parse(url);
+                                  if (!await launchUrl(link)) {
                                     throw Exception('Could not launch $url');
                                   }
                                 },
@@ -178,5 +184,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-
-// https://thehill.com/wp-content/uploads/sites/2/2025/01/Screenshot-2025-01-26-at-8.27.00 AM.png?w=1280

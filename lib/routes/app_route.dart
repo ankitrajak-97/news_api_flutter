@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:news_api/ui/country/view/country_view.dart';
 import 'package:news_api/ui/home/view/home_view.dart';
 
 import '../ui/splash/view/splash_view.dart';
@@ -18,4 +19,12 @@ final getPages = [
     transition: kDefaultTransition,
     transitionDuration: kDefaultTransitionDuration,
   ),
+  
+  GetPage(
+    name: CountryView.name,
+    page: () => const CountryView(),
+    transition: kDefaultTransition,
+    transitionDuration: kDefaultTransitionDuration,
+  ),
+
 ];
