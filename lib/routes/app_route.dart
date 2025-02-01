@@ -19,12 +19,10 @@ final getPages = [
     transition: kDefaultTransition,
     transitionDuration: kDefaultTransitionDuration,
   ),
-  
   GetPage(
     name: CountryView.name,
-    page: () => const CountryView(),
+    page: () => CountryView(),
     transition: kDefaultTransition,
     transitionDuration: kDefaultTransitionDuration,
   ),
-
 ];

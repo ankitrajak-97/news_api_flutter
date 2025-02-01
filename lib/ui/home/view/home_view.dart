@@ -97,7 +97,8 @@ class HomeView extends StatelessWidget {
                       return HomeChip(
                         chipTitle: title,
                         onTap: () {
-                          controller.updateSelectedChipList(selectedChip: title);
+                          controller.updateSelectedChipList(
+                              selectedChip: title);
                         },
                       );
                     },
@@ -137,12 +138,15 @@ class HomeView extends StatelessWidget {
                           )
                         : ListView.separated(
                             itemBuilder: (context, index) {
-                              final imageUrl = controller.articles[index].urlImg;
+                              final imageUrl =
+                                  controller.articles[index].urlImg;
                               final author = controller.articles[index].author;
                               final title = controller.articles[index].title;
                               final desc = controller.articles[index].desc;
-                              final publishedAt = controller.articles[index].publishedAt;
-                              final url = controller.articles[index].url ?? "https://www.google.com";
+                              final publishedAt =
+                                  controller.articles[index].publishedAt;
+                              final url = controller.articles[index].url ??
+                                  "https://www.google.com";
 
                               return HomeListItem(
                                 imageUrl: imageUrl,

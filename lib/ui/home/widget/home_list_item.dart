@@ -14,8 +14,6 @@ class HomeListItem extends StatelessWidget {
   final String? url;
   final VoidCallback onIconButtonClick;
 
-
-
   const HomeListItem({
     super.key,
     required this.imageUrl,
@@ -59,7 +57,8 @@ class HomeListItem extends StatelessWidget {
                           imageUrl ?? "",
                           fit: BoxFit.cover,
                           // Frame builder to add custom behavior when the image frame is loaded
-                          frameBuilder: (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+                          frameBuilder: (BuildContext context, Widget child,
+                              int? frame, bool wasSynchronouslyLoaded) {
                             if (wasSynchronouslyLoaded) {
                               return child;
                             }
@@ -70,20 +69,25 @@ class HomeListItem extends StatelessWidget {
                             );
                           },
                           // Loading builder to show a loader while the image is being fetched
-                          loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
                             }
                             return Center(
                               child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
                                     : null,
                               ),
                             );
                           },
                           // Error builder to handle any errors while fetching the image
-                          errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          errorBuilder: (BuildContext context, Object error,
+                              StackTrace? stackTrace) {
                             return Center(
                               child: Icon(
                                 Icons.error,

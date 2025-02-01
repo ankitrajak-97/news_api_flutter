@@ -1,0 +1,20 @@
+class Country {
+  final String name;
+  final String code;
+  final String flagPath;
+
+  Country({
+    required this.name,
+    required this.code,
+    required this.flagPath,
+  });
+}
+
+// List of countries
+final List<Country> countries = [
+  Country(name: "India", code: "in", flagPath: "assets/svg/ic_india.svg"),
+  Country(name: "United States", code: "us", flagPath: "assets/svg/ic_usa.svg"),
+  Country(name: "Canada", code: "ca", flagPath: "assets/svg/ic_canada.svg"),
+  Country(name: "United Kingdom", code: "uk", flagPath: "assets/svg/ic_uk.svg"),
+  Country(name: "Brazil", code: "br", flagPath: "assets/svg/ic_brazil.svg"),
+];
