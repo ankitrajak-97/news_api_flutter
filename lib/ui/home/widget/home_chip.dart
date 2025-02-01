@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
-class HomeChip extends StatelessWidget {
+class HomeCategoryChip extends StatelessWidget {
   final String chipTitle;
+  final bool isSelected;
   final VoidCallback onTap;
-  const HomeChip({
+  const HomeCategoryChip({
     super.key,
     required this.chipTitle,
     required this.onTap,
+    this.isSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(kRadius),
       child: Row(
         children: [
           Container(
@@ -22,6 +25,7 @@ class HomeChip extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white10,
               borderRadius: BorderRadius.circular(kRadius),
+              border: isSelected ? Border.all(color: const Color(0xFF6D130C)) : null,
             ),
             alignment: Alignment.center,
             padding: EdgeInsets.all(kPadding),

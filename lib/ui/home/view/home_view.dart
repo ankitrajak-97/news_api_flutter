@@ -46,17 +46,21 @@ class HomeView extends StatelessWidget {
               }),
 
               Container(
-                  width: Get.width,
-                  height: Get.height * 0.05,
-                  padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
-                  child: ListView.separated(
+                width: Get.width,
+                height: Get.height * 0.05,
+                padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
+                child: Obx(() {
+                  return ListView.separated(
                     physics: BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     itemCount: controller.chipList.length,
                     itemBuilder: (context, index) {
+                      // 0 1 2 3 4 5 6
                       final title = controller.chipList[index];
-                      return HomeChip(
+                      final isSelected = controller.chipList[index] == controller.selectedChipText.value;
+                      return HomeCategoryChip(
                         chipTitle: title,
+                        isSelected: isSelected,
                         onTap: () {
                           controller.updateSelectedChipListByIndex(index: index);
                           // controller.updateSelectedChipListByName(selectedChip: title);
@@ -68,7 +72,9 @@ class HomeView extends StatelessWidget {
                         width: kWidth * 2,
                       );
                     },
-                  )),
+                  );
+                }),
+              ),
 
               SizedBox(
                 height: kHeight * 2,

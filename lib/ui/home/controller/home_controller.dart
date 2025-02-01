@@ -13,7 +13,7 @@ import '../../../api/model/base/base_response.dart';
 
 class HomeController extends GetxController {
   final _api = ApiAdapter();
-  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports'];
+  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports'].obs;
 
   final selectedChipText = ''.obs;
   var selectedCountry = countries.first.obs; // Default selected country
@@ -63,6 +63,7 @@ class HomeController extends GetxController {
 
   Future<void> updateSelectedChipListByIndex({required int index}) async {
     selectedChipText.value = chipList[index];
+    chipList.refresh();
     await fetchHeadlines();
   }
 

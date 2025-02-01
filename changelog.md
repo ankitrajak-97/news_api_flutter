@@ -14,6 +14,7 @@ version: 1.0.0+1
 - home page ui refactor (datetime added, author text updated, url launcher added)
 - country selection page is complete
 - on change country home api call will trigger again
+- home chip list row selection ui added
 
 TODO:
 - add publish at time in each list item
