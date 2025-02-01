@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:news_api/ui/country/controller/country_controller.dart';
 
+import '../../../components/custom_appbar.dart';
 import '../../../utils/style/app_color.dart';
 
 class CountryView extends StatelessWidget {
@@ -16,38 +18,55 @@ class CountryView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackgroundColor,
-        title: Text("Countries", style: TextStyle(color: Colors.white)),
+        toolbarHeight: 0.0,
       ),
       backgroundColor: kBackgroundColor,
-      body: Obx(() => ListView.builder(
-            itemCount: controller.countryList.length,
-            itemBuilder: (context, index) {
-              final country =
-                  controller.countryList[index]; // Fetch country object
-
-              return ListTile(
-                leading: SvgPicture.asset(
-                  country.flagPath, // Display country flag
-                  height: 40,
-                  width: 40,
-                ),
-                title: Text(
-                  country.name,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                subtitle: Text(
-                  country.code, // Display country short form
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-                onTap: () {
-                  controller.updateSelectedCountry(
-                      country); // Update selected country
-                  print(country.code);
-                  Get.back(); // Close the country selection screen
-                },
-              );
-            },
-          )),
+      body: SizedBox(
+        height: Get.height,
+        width: Get.width,
+        child: Column(
+          children: [
+            CustomAppBar(
+              title: 'Select Country',
+              showTrailing: false,
+            ),
+            Expanded(
+              child: Obx(() {
+                return ListView.builder(
+                  itemCount: controller.countryList.length,
+                  itemBuilder: (context, index) {
+                    final country = controller.countryList[index]; // Fetch country object
+                    return ListTile(
+                      leading: SvgPicture.asset(
+                        country.flagPath, // Display country flag
+                        height: 40.h,
+                        width: 40.w,
+                      ),
+                      title: Text(
+                        country.name,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                      subtitle: Text(
+                        country.code, // Display country short form
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      onTap: () {
+                        controller.onSelectCountry(index: index);
+                      },
+                    );
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

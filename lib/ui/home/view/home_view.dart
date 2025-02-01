@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/ui/home/widget/home_loader.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../../../components/custom_appbar.dart';
 import '../../../utils/style/app_color.dart';
 import '../controller/home_controller.dart';
 import '../widget/home_chip.dart';
@@ -34,55 +33,17 @@ class HomeView extends StatelessWidget {
           child: Column(
             children: [
               // heading
-              Container(
-                width: Get.width,
-                height: Get.height * 0.1,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: kWidth * 2),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Headlines",
-                      style: GoogleFonts.nanumGothic(
-                        color: Colors.white54,
-                        fontSize: 28.0.sp,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-
-                    HomeCountryChip(
-                      onCountryButtonClick: () {
-                        Get.toNamed('/country');
-                      },
-                    )
-                    // Obx(() => DropdownButton<String>(
-                    //       value: dropdownController
-                    //           .selectedValue.value, // GetX state
-                    //       hint: Text("Select Country"),
-                    //       items: dropdownController.dropDownList
-                    //           .map((String value) {
-                    //         return DropdownMenuItem<String>(
-                    //           value: value,
-                    //           child: Text(value),
-                    //         );
-                    //       }).toList(),
-                    //       onChanged:
-                    //           dropdownController.setSelected, // Update value
-                    //     )),
-                  ],
-                ),
-              ),
-              // SizedBox(
-              //   width: Get.width,
-              //   height: Get.height * 0.05,
-              //   child: HomeChip(
-              //     chipTitle: 'Health',
-              //     onTap: () {
-              //       print("health");
-              //     },
-              //   ),
-              // ),
+              Obx(() {
+                var country = controller.selectedCountry.value;
+                return CustomAppBar(
+                  title: 'Headlines',
+                  trailingWidget: HomeCountryChip(
+                    onCountryButtonClick: controller.routeToCountryView,
+                    shortName: country.code,
+                    flagPath: country.flagPath,
+                  ),
+                );
+              }),
 
               Container(
                   width: Get.width,
@@ -97,8 +58,8 @@ class HomeView extends StatelessWidget {
                       return HomeChip(
                         chipTitle: title,
                         onTap: () {
-                          controller.updateSelectedChipList(
-                              selectedChip: title);
+                          controller.updateSelectedChipListByIndex(index: index);
+                          // controller.updateSelectedChipListByName(selectedChip: title);
                         },
                       );
                     },
@@ -138,15 +99,12 @@ class HomeView extends StatelessWidget {
                           )
                         : ListView.separated(
                             itemBuilder: (context, index) {
-                              final imageUrl =
-                                  controller.articles[index].urlImg;
+                              final imageUrl = controller.articles[index].urlImg;
                               final author = controller.articles[index].author;
                               final title = controller.articles[index].title;
                               final desc = controller.articles[index].desc;
-                              final publishedAt =
-                                  controller.articles[index].publishedAt;
-                              final url = controller.articles[index].url ??
-                                  "https://www.google.com";
+                              final publishedAt = controller.articles[index].publishedAt;
+                              final url = controller.articles[index].url ?? "https://www.google.com";
 
                               return HomeListItem(
                                 imageUrl: imageUrl,
@@ -156,10 +114,7 @@ class HomeView extends StatelessWidget {
                                 publishedAt: publishedAt,
                                 url: url,
                                 onIconButtonClick: () async {
-                                  final link = Uri.parse(url);
-                                  if (!await launchUrl(link)) {
-                                    throw Exception('Could not launch $url');
-                                  }
+                                  await controller.launchInBrowser(url: url);
                                 },
                               );
                             },

@@ -12,6 +12,8 @@ version: 1.0.0+1
 - now you can choose different categories of news
 - everything is not dynamic
 - home page ui refactor (datetime added, author text updated, url launcher added)
+- country selection page is complete
+- on change country home api call will trigger again
 
 TODO:
 - add publish at time in each list item

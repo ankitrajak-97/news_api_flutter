@@ -4,10 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
 class HomeCountryChip extends StatelessWidget {
+  final String shortName;
+  final String flagPath;
   final VoidCallback onCountryButtonClick;
   const HomeCountryChip({
     super.key,
     required this.onCountryButtonClick,
+    required this.shortName,
+    required this.flagPath,
   });
 
   @override
@@ -27,12 +31,12 @@ class HomeCountryChip extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SvgPicture.asset(
-              'assets/svg/ic_usa.svg',
+              flagPath,
               height: kHeight * 2,
               width: kHeight * 2,
             ),
             Text(
-              'us',
+              shortName,
               style: GoogleFonts.poppins(
                 color: Colors.white,
               ),

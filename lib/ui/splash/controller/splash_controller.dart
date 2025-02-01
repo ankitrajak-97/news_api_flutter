@@ -20,6 +20,7 @@ class SplashController extends GetxController {
       // Get.to(() => HomeView()); class based approach
 
       Get.toNamed(HomeView.name); // name based approach
+      
     });
   }
 

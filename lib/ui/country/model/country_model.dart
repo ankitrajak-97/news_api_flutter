@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Country {
   final String name;
   final String code;
@@ -8,10 +9,13 @@ class Country {
     required this.code,
     required this.flagPath,
   });
+
+  @override
+  String toString() => 'Country(name: $name, code: $code, flagPath: $flagPath)';
 }
 
 // List of countries
-final List<Country> countries = [
+final countries = [
   Country(name: "India", code: "in", flagPath: "assets/svg/ic_india.svg"),
   Country(name: "United States", code: "us", flagPath: "assets/svg/ic_usa.svg"),
   Country(name: "Canada", code: "ca", flagPath: "assets/svg/ic_canada.svg"),
