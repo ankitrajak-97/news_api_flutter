@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
@@ -137,7 +138,7 @@ class HomeListItem extends StatelessWidget {
                   Text(
                     modifiedTitle,
                     style: GoogleFonts.roboto(
-                      fontSize: 16.0,
+                      fontSize: 14.0,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.1,
                       height: 1.1,
@@ -150,7 +151,7 @@ class HomeListItem extends StatelessWidget {
                   Text(
                     desc ?? "",
                     style: GoogleFonts.roboto(
-                      fontSize: 12.0,
+                      fontSize: 12.0.sp,
                       fontWeight: FontWeight.w200,
                       height: 1.4,
                       color: Colors.white,
@@ -159,26 +160,41 @@ class HomeListItem extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  SizedBox(
+                    height: kHeight,
+                  ),
                   Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        reportDate,
-                        style: GoogleFonts.roboto(
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white30,
+                  SizedBox(
+                    height: kHeight * 4,
+                    // color: Colors.indigo,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          reportDate,
+                          style: GoogleFonts.roboto(
+                            fontSize: 12.0.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white30,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: onIconButtonClick,
-                        tooltip: "Open in Browser",
-                        icon: Icon(Icons.arrow_forward),
-                        iconSize: 16.0,
-                        splashRadius: 2.0,
-                      ),
-                    ],
+                        SizedBox(
+                          width: kHeight * 4, // Adjust width
+                          height: kHeight * 4, // Adjust height
+                          // alignment: Alignment.center,
+                          // color: Colors.pink,
+                          child: IconButton(
+                            color: Colors.white,
+                            onPressed: onIconButtonClick,
+                            tooltip: "Open in Browser",
+                            icon: Icon(Icons.arrow_forward),
+                            iconSize: 12.0.sp,
+                            splashRadius: 2.0,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
 
                   SizedBox(
