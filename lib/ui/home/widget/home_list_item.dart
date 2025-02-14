@@ -32,7 +32,7 @@ class HomeListItem extends StatelessWidget {
     // title is structure here
     final modifiedTitle = modifyTitle(title: title);
     return SizedBox(
-      height: kHeight * 22,
+      height: kHeight * 23,
       child: Row(
         children: [
           Expanded(
@@ -128,98 +128,175 @@ class HomeListItem extends StatelessWidget {
           Expanded(
             flex: 5,
             child: Container(
-              // color: Colors.green,
-              padding: EdgeInsets.symmetric(
-                horizontal: kWidth * 2,
-              ).copyWith(top: kHeight),
+              padding: EdgeInsets.all(kPadding / 2),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    modifiedTitle,
-                    style: GoogleFonts.roboto(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.1,
-                      height: 1.1,
-                      color: Colors.white,
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      modifiedTitle,
+                      style: GoogleFonts.openSans(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  SizedBox(
-                    height: kHeight,
-                  ),
-                  Text(
-                    desc ?? "",
-                    style: GoogleFonts.roboto(
-                      fontSize: 12.0.sp,
-                      fontWeight: FontWeight.w200,
-                      height: 1.4,
-                      color: Colors.white,
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      desc ?? '',
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.w200,
+                        fontSize: 12.0.sp,
+                        color: Colors.white,
+                      ),
                     ),
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(
-                    height: kHeight,
-                  ),
-                  Spacer(),
-                  SizedBox(
-                    height: kHeight * 4,
-                    // color: Colors.indigo,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          reportDate,
-                          style: GoogleFonts.roboto(
-                            fontSize: 12.0.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white30,
+                  Expanded(
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            reportDate,
+                            style: GoogleFonts.roboto(
+                              fontSize: 12.0.sp,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white30,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: kHeight * 4, // Adjust width
-                          height: kHeight * 4, // Adjust height
-                          // alignment: Alignment.center,
-                          // color: Colors.pink,
-                          child: IconButton(
-                            color: Colors.white,
-                            onPressed: onIconButtonClick,
-                            tooltip: "Open in Browser",
-                            icon: Icon(Icons.arrow_forward),
-                            iconSize: 12.0.sp,
-                            splashRadius: 2.0,
-                          ),
-                        )
-                      ],
+                          SizedBox(
+                            width: kHeight * 4, // Adjust width
+                            height: kHeight * 4, // Adjust height
+                            // alignment: Alignment.center,
+                            // color: Colors.pink,
+                            child: IconButton(
+                              color: Colors.white,
+                              onPressed: onIconButtonClick,
+                              tooltip: "Open in Browser",
+                              icon: Icon(Icons.arrow_forward),
+                              iconSize: 12.0.sp,
+                              splashRadius: 2.0,
+                            ),
+                          )
+                        ],
+                      ),
+                      // color: Colors.amber,
                     ),
                   ),
-
-                  SizedBox(
-                    height: kHeight / 2,
-                  ),
-                  // Padding(
-                  //   padding: EdgeInsets.all(kHeight),
-                  //   child: GestureDetector(
-                  //     onTap: () => _launchURL(context),
-                  //     child: Text(
-                  //       '$url',
-                  //       style: GoogleFonts.roboto(
-                  //         fontSize: 12.0,
-                  //         fontWeight: FontWeight.w600,
-                  //         height: 1.4,
-                  //         color: Colors.blue,
-                  //         decoration: TextDecoration.underline,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
-          ),
+          )
+          // Expanded(
+          //   flex: 5,
+          //   child: Container(
+          //     color: Colors.green,
+          //     padding: EdgeInsets.symmetric(
+          //       horizontal: kWidth * 2,
+          //     ).copyWith(top: kHeight),
+          //     child: Container
+          //       color: Colors.blue,
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Text(modifiedTitle),
+          //           // Container(
+          //           //   height: kHeight * 8,
+          //           //   color: Colors.red,
+          //           //   child: Text(
+          //           //     modifiedTitle,
+          //           //     style: GoogleFonts.roboto(
+          //           //       fontSize: 14.0,
+          //           //       fontWeight: FontWeight.w600,
+          //           //       letterSpacing: 0.1,
+          //           //       height: 1.1,
+          //           //       color: Colors.white,
+          //           //     ),
+          //           //     maxLines: 3,
+          //           //   ),
+          //           // ),
+          //           // SizedBox(
+          //           //   height: kHeight,
+          //           // ),
+          //           // Container(
+          //           //   height: kHeight * 10,
+          //           //   color: Colors.indigo,
+          //           //   child: Text(
+          //           //     desc ?? "",
+          //           //     style: GoogleFonts.roboto(
+          //           //       fontSize: 12.0.sp,
+          //           //       fontWeight: FontWeight.w200,
+          //           //       height: 1.4,
+          //           //       color: Colors.white,
+          //           //     ),
+          //           //     softWrap: true,
+          //           //     maxLines: 3,
+          //           //     overflow: TextOverflow.ellipsis,
+          //           //   ),
+          //           // ),
+          //           // // SizedBox(
+          //           // //   height: kHeight,
+          //           // // ),
+          //           // Spacer(),
+          //           // SizedBox(
+          //           //   height: kHeight * 4,
+          //           //   // color: Colors.indigo,
+          //           //   child: Row(
+          //           //     crossAxisAlignment: CrossAxisAlignment.center,
+          //           //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           //     children: [
+          //           //       Text(
+          //           //         reportDate,
+          //           //         style: GoogleFonts.roboto(
+          //           //           fontSize: 12.0.sp,
+          //           //           fontWeight: FontWeight.w400,
+          //           //           color: Colors.white30,
+          //           //         ),
+          //           //       ),
+          //           //       SizedBox(
+          //           //         width: kHeight * 4, // Adjust width
+          //           //         height: kHeight * 4, // Adjust height
+          //           //         // alignment: Alignment.center,
+          //           //         // color: Colors.pink,
+          //           //         child: IconButton(
+          //           //           color: Colors.white,
+          //           //           onPressed: onIconButtonClick,
+          //           //           tooltip: "Open in Browser",
+          //           //           icon: Icon(Icons.arrow_forward),
+          //           //           iconSize: 12.0.sp,
+          //           //           splashRadius: 2.0,
+          //           //         ),
+          //           //       )
+          //           //     ],
+          //           //   ),
+          //           // ),
+          //           //
+          //           // SizedBox(
+          //           //   height: kHeight / 2,
+          //           // ),
+          //           // Padding(
+          //           //   padding: EdgeInsets.all(kHeight),
+          //           //   child: GestureDetector(
+          //           //     onTap: () => _launchURL(context),
+          //           //     child: Text(
+          //           //       '$url',
+          //           //       style: GoogleFonts.roboto(
+          //           //         fontSize: 12.0,
+          //           //         fontWeight: FontWeight.w600,
+          //           //         height: 1.4,
+          //           //         color: Colors.blue,
+          //           //         decoration: TextDecoration.underline,
+          //           //       ),
+          //           //     ),
+          //           //   ),
+          //           // ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );

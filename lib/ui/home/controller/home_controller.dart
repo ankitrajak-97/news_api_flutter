@@ -13,13 +13,25 @@ import '../../../api/model/base/base_response.dart';
 
 class HomeController extends GetxController {
   final _api = ApiAdapter();
-  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports'].obs;
+  final chipList = [
+    'business',
+    'entertainment',
+    'health',
+    'science',
+    'general',
+    'sports'
+        'others'
+  ].obs;
 
   final selectedChipText = ''.obs;
   var selectedCountry = countries.first.obs; // Default selected country
 
   final articles = <ArticleResponse>[].obs;
   final isLoading = true.obs;
+  var headTitle = 'Headlines'.obs;
+  final headlineTitle = 'Headlines';
+  final everyTitle = 'Everything';
+  var searchQuery = ''.obs;
 
   @override
   void onInit() {
@@ -49,6 +61,24 @@ class HomeController extends GetxController {
     _onUpdateCountry(country: res);
   }
 
+  void toggleNewsMode() {
+    if (headTitle.value == headlineTitle) {
+      headTitle.value = everyTitle;
+      fetchEverything();
+    } else {
+      headTitle.value = headlineTitle;
+      fetchHeadlines();
+    }
+  }
+
+  bool shouldShowCategoryChips() {
+    return headTitle.value == headlineTitle;
+  }
+
+  bool shouldShowHomeCountryChips() {
+    return headTitle.value == headlineTitle;
+  }
+
   @override
   void onClose() {
     // TODO: implement onClose
@@ -56,7 +86,8 @@ class HomeController extends GetxController {
     log("controller onClose");
   }
 
-  Future<void> updateSelectedChipListByName({required String selectedChip}) async {
+  Future<void> updateSelectedChipListByName(
+      {required String selectedChip}) async {
     selectedChipText.value = selectedChip;
     await fetchHeadlines();
   }
@@ -90,7 +121,7 @@ class HomeController extends GetxController {
       "category": selectedChipText.value,
       "apiKey": kAPIKey,
     };
-    var response = await _userRegistrationApiCall(queryParams);
+    var response = await _userRegistrationApiCallHeadlines(queryParams);
     if (response != null) {
       articles.assignAll(response.articleList);
       response.resultCount;
@@ -101,11 +132,10 @@ class HomeController extends GetxController {
   Future<void> fetchEverything() async {
     isLoading.value = true;
     final queryParams = {
-      // "country": "us",
-      // "category": selectedChipText.value,
+      "q": searchQuery.value.isNotEmpty ? searchQuery.value : "apple",
       "apiKey": kAPIKey,
     };
-    var response = await _userRegistrationApiCall(queryParams);
+    var response = await _userRegistrationApiCallEverything(queryParams);
     if (response != null) {
       articles.assignAll(response.articleList);
       response.resultCount;
@@ -113,13 +143,29 @@ class HomeController extends GetxController {
     isLoading.value = false;
   }
 
-  // Handle the API call only
-  Future<BaseResponse?> _userRegistrationApiCall(dynamic queryParams) async {
+  // Handle the API call only for headlines
+  Future<BaseResponse?> _userRegistrationApiCallHeadlines(
+      dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getHeadlines(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}",
+          name: "Error", stackTrace: e.stackTrace);
+      response = null;
+    }
+    return response;
+  }
+
+  // Handle the API call only for headlines
+  Future<BaseResponse?> _userRegistrationApiCallEverything(
+      dynamic queryParams) async {
+    BaseResponse? response;
+    try {
+      response = await _api.getEverything(params: queryParams);
+    } on DioException catch (e) {
+      log("Status Code: ${e.response?.statusCode ?? "NA"}",
+          name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;

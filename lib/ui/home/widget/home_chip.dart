@@ -6,11 +6,13 @@ class HomeCategoryChip extends StatelessWidget {
   final String chipTitle;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool showCategory;
   const HomeCategoryChip({
     super.key,
     required this.chipTitle,
     required this.onTap,
     this.isSelected = false,
+    this.showCategory = true,
   });
 
   @override
@@ -25,7 +27,9 @@ class HomeCategoryChip extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white10,
               borderRadius: BorderRadius.circular(kRadius),
-              border: isSelected ? Border.all(color: const Color(0xFF6D130C)) : null,
+              border: isSelected
+                  ? Border.all(color: const Color(0xFF6D130C))
+                  : null,
             ),
             alignment: Alignment.center,
             padding: EdgeInsets.all(kPadding),

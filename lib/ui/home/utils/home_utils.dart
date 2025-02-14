@@ -2,17 +2,20 @@ import 'package:intl/intl.dart';
 
 String modifyTitle({String? title}) {
   if (title == null) return "";
+  if (title.contains('-')) {
+    var parts = title.split("-");
+    if (parts.isEmpty) return "";
 
-  // ankit-papai-rajak-belur => ankit-papai-rajak
-  // nirjan-munshi-cgr
-  var parts = title.split("-");
-  // => [ankit, papai, rajak, belur]
-  // => [nirjan, munshi, cgr]
-  if (parts.isEmpty) return "";
+    if (parts.length < 2) {
+      parts.removeLast();
+    }
 
-  parts.removeLast();
-  var joinedData = parts.join("-");
-  return joinedData.trim();
+    var joinedData = parts.join("-");
+
+    return joinedData.trim();
+  } else {
+    return title.trim();
+  }
 }
 
 String getStructuredDateTime(String? dateString) {

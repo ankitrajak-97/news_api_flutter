@@ -9,12 +9,15 @@ class CustomAppBar extends StatelessWidget {
 
   final bool showTrailing;
   final Widget? trailingWidget;
-  const CustomAppBar({
-    super.key,
-    required this.title,
-    this.showTrailing = true,
-    this.trailingWidget,
-  });
+  final bool everythingButton;
+  final VoidCallback? onTap;
+  const CustomAppBar(
+      {super.key,
+      required this.title,
+      this.showTrailing = true,
+      this.trailingWidget,
+      this.everythingButton = false,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +29,24 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: GoogleFonts.nanumGothic(
-              color: Colors.white54,
-              fontSize: 28.0.sp,
-              fontWeight: FontWeight.w900,
-            ),
+          Row(
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.nanumGothic(
+                  color: Colors.white54,
+                  fontSize: 28.0.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              if (everythingButton) ...[
+                SizedBox(width: 10),
+                IconButton(
+                  onPressed: onTap,
+                  icon: Icon(Icons.toggle_off_rounded, color: Colors.white54),
+                ),
+              ],
+            ],
           ),
           Visibility(
             visible: showTrailing,

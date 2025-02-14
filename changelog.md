@@ -15,6 +15,9 @@ version: 1.0.0+1
 - country selection page is complete
 - on change country home api call will trigger again
 - home chip list row selection ui added
+- toggle news mode function added to toggle between headlines and everything
+- conditionally displaying HomeCategory chip and Home country chip when showing Headlines
+- search box added instead of Home category chip for searching news with updating parameter by user
 
 TODO:
 - add publish at time in each list item
