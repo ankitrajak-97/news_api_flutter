@@ -24,14 +24,15 @@ class HomeController extends GetxController {
   ].obs;
 
   final selectedChipText = ''.obs;
-  var selectedCountry = countries.first.obs; // Default selected country
+  final selectedCountry = countries.first.obs; // Default selected country
 
   final articles = <ArticleResponse>[].obs;
   final isLoading = true.obs;
-  var headTitle = 'Headlines'.obs;
+  final headTitle = 'Headlines'.obs;
   final headlineTitle = 'Headlines';
   final everyTitle = 'Everything';
-  var searchQuery = ''.obs;
+  final searchQuery = ''.obs;
+  final errorMsg = ''.obs;
 
   @override
   void onInit() {
@@ -62,11 +63,14 @@ class HomeController extends GetxController {
   }
 
   void toggleNewsMode() {
+    articles.clear();
     if (headTitle.value == headlineTitle) {
       headTitle.value = everyTitle;
-      fetchEverything();
+      errorMsg.value = "Please type something to search for";
+      // fetchEverything();
     } else {
       headTitle.value = headlineTitle;
+      errorMsg.value = "No Data found ";
       fetchHeadlines();
     }
   }
@@ -132,7 +136,7 @@ class HomeController extends GetxController {
   Future<void> fetchEverything() async {
     isLoading.value = true;
     final queryParams = {
-      "q": searchQuery.value.isNotEmpty ? searchQuery.value : "apple",
+      "q": searchQuery.value,
       "apiKey": kAPIKey,
     };
     var response = await _userRegistrationApiCallEverything(queryParams);

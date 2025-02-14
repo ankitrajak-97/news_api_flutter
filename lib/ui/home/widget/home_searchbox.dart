@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
-import '../controller/home_controller.dart';
-
 class SearchBox extends StatelessWidget {
+  final ValueChanged<String> onTextChanged;
+  final ValueChanged<String> onTextSubmitted;
+
   const SearchBox({
     super.key,
-    required this.controller,
+    required this.onTextChanged,
+    required this.onTextSubmitted,
+    // required this.controller,
   });
 
-  final HomeController controller;
+  // final HomeController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +20,12 @@ class SearchBox extends StatelessWidget {
       height: kHeight * 5,
       child: TextField(
         onChanged: (value) {
-          controller.searchQuery.value = value;
+          // controller.searchQuery.value = value;
+          onTextChanged(value);
         },
         onSubmitted: (value) {
-          controller.fetchEverything(); // Fetch with new query
+          // controller.fetchEverything(); // Fetch with new query
+          onTextSubmitted(value);
         },
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(

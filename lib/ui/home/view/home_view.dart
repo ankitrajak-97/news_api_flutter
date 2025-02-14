@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +63,15 @@ class HomeView extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: kPadding * 2),
                 child: Obx(() {
                   return Visibility(
-                    replacement: SearchBox(controller: controller),
+                    replacement: SearchBox(
+                      onTextChanged: (value) {
+                        log(value, name: 'HomeView');
+                        controller.searchQuery.value = value;
+                      },
+                      onTextSubmitted: (value) {
+                        controller.fetchEverything();
+                      },
+                    ),
                     visible: controller.shouldShowCategoryChips(),
                     child: HomeHorizontalCategory(controller: controller),
                   );
@@ -115,10 +125,12 @@ class HomeView extends StatelessWidget {
                         itemCount: controller.articles.length,
                       ),
                       visible: controller.articles.isEmpty,
-                      child: Text(
-                        "No Data found. Try again",
-                        style: GoogleFonts.nunito(
-                          color: Colors.white,
+                      child: Center(
+                        child: Text(
+                          controller.errorMsg.value,
+                          style: GoogleFonts.nunito(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
