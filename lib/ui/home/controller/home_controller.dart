@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_api/api/constants/api_constants.dart';
 import 'package:news_api/api/model/article/article_response.dart';
 import 'package:news_api/ui/country/model/country_model.dart';
 import 'package:news_api/ui/country/view/country_view.dart';
+import 'package:news_api/ui/home/view/sort_bottom_sheet.dart';
+import 'package:news_api/utils/style/app_dimen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api_adapter.dart';
@@ -19,12 +22,13 @@ class HomeController extends GetxController {
     'health',
     'science',
     'general',
-    'sports'
-        'others'
+    'sports',
+    'others'
   ].obs;
 
   final selectedChipText = ''.obs;
   final selectedCountry = countries.first.obs; // Default selected country
+  final selectedSort = 'publishedAt'.obs;
 
   final articles = <ArticleResponse>[].obs;
   final isLoading = true.obs;
@@ -33,6 +37,12 @@ class HomeController extends GetxController {
   final everyTitle = 'Everything';
   final searchQuery = ''.obs;
   final errorMsg = ''.obs;
+
+  void updateSort(String newSort) {
+    selectedSort.value = newSort;
+    fetchEverything(); // Fetch new sorted data
+    Get.back(); // Close the bottom sheet
+  }
 
   @override
   void onInit() {
@@ -138,7 +148,10 @@ class HomeController extends GetxController {
     final queryParams = {
       "q": searchQuery.value,
       "apiKey": kAPIKey,
+      "sortBy":selectedSort.value,
     };
+
+
     var response = await _userRegistrationApiCallEverything(queryParams);
     if (response != null) {
       articles.assignAll(response.articleList);
@@ -174,4 +187,20 @@ class HomeController extends GetxController {
     }
     return response;
   }
+  void openBottomSheet(BuildContext context){
+    showModalBottomSheet(context:context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(kRadius*3)),
+      ),
+      builder: (context) =>  SortBottomSheet(),
+    );
+  }
+
+  Future<void> updateSortAndFetch({required String selectedSort}) async {
+    this.selectedSort.value = selectedSort; // ✅ Update selected sort option
+    await fetchEverything(); // ✅ Fetch news with sorting
+  }
+
+
 }

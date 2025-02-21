@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_api/ui/home/widget/home_loader.dart';
@@ -48,6 +49,10 @@ class HomeView extends StatelessWidget {
                   },
                   trailingWidget: Visibility(
                     visible: controller.shouldShowHomeCountryChips(),
+                    replacement: SizedBox(width: kWidth*4,height: kHeight*5,
+                    child: IconButton(onPressed: (){
+                      controller.openBottomSheet(context);
+                    }, icon:const  FaIcon(FontAwesomeIcons.sort,color: Colors.white,)), ),
                     child: HomeCountryChip(
                       onCountryButtonClick: controller.routeToCountryView,
                       shortName: country.code,
