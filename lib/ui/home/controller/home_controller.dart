@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_api/api/constants/api_constants.dart';
 import 'package:news_api/api/model/article/article_response.dart';
+import 'package:news_api/service/data_provider_service.dart';
 import 'package:news_api/ui/country/model/country_model.dart';
 import 'package:news_api/ui/country/view/country_view.dart';
 import 'package:news_api/ui/home/view/sort_bottom_sheet.dart';
@@ -14,23 +15,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api_adapter.dart';
 import '../../../api/model/base/base_response.dart';
-import '../../../shared_preference/shared_prefs_helper.dart';
 
 class HomeController extends GetxController {
+  final dataProvider = Get.find<DataProviderService>();
+  final _name = "HomeController";
   final _api = ApiAdapter();
-  final chipList = [
-    'business',
-    'entertainment',
-    'health',
-    'science',
-    'general',
-    'sports',
-    'others'
-  ].obs;
+  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports', 'others'].obs;
   final sortList = ['publishedAt', 'relevancy', 'popularity'].obs;
 
   final selectedChipText = ''.obs;
-  final selectedCountry = countries.first.obs; // Default selected country
+
   final selectedSort = ''.obs;
 
   final articles = <ArticleResponse>[].obs;
@@ -41,20 +35,13 @@ class HomeController extends GetxController {
   final searchQuery = ''.obs;
   final errorMsg = ''.obs;
 
-  void updateSort(String newSort) {
-    selectedSort.value = newSort;
-    fetchEverything(); // Fetch new sorted data
-    Get.back(); // Close the bottom sheet
-  }
-
   @override
-  void onInit() async{
+  void onInit() async {
     super.onInit();
     selectedChipText.value = chipList.first;
     selectedSort.value = sortList.first;
     String? lastViewedTab = Get.arguments as String?;
     headTitle.value = lastViewedTab ?? 'headlines'; // Set default to headlines
-
   }
 
   @override
@@ -69,23 +56,43 @@ class HomeController extends GetxController {
       await fetchHeadlines(); // ✅ Only fetch if last viewed tab was "Headlines"
     }
 
+    // doApiCall()
+
     // await fetchHeadlines();
 
     // to handle db operation or api calls only if required
   }
 
+  void doApiCall() {
+    /// everything / headlines save and get
+    /// in data provider class, there will be a variblable which one is the fetch (everything / headlines)
+    /// dataprovier.thatvariablename.value
+    /// if(dataprovier.thatvariablename.value = "everything"){
+    ///   doFetchEverythingApiCall()
+    /// } else {
+    ///   doHeadlineApiCall()
+    /// }
+  }
+
+  void updateSort(String newSort) {
+    selectedSort.value = newSort;
+    fetchEverything(); // Fetch new sorted data
+    Get.back(); // Close the bottom sheet
+  }
+
   Future<void> _onUpdateCountry({required Country country}) async {
-    selectedCountry.value = country;
+    dataProvider.selectedCountry.value = country;
     await fetchHeadlines();
   }
 
   // with this you can go to country view
   Future<void> routeToCountryView() async {
     var res = await Get.toNamed(CountryView.name) as Country;
-    print(res);
+    log("selected country: ${res.code}", name: _name);
+    await dataProvider.saveCountry(countryCode: res.code);
+    dataProvider.getCountry();
     _onUpdateCountry(country: res);
   }
-
 
   void toggleNewsMode() async {
     articles.clear();
@@ -94,7 +101,6 @@ class HomeController extends GetxController {
     if (headTitle.value == headlineTitle) {
       headTitle.value = everyTitle;
       errorMsg.value = "Please type something to search for";
-
 
       await prefs.setString('lastViewedTab', 'everything');
     } else {
@@ -105,7 +111,6 @@ class HomeController extends GetxController {
       await prefs.setString('lastViewedTab', 'headlines');
     }
   }
-
 
   bool shouldShowCategoryChips() {
     return headTitle.value == headlineTitle;
@@ -122,8 +127,7 @@ class HomeController extends GetxController {
     log("controller onClose");
   }
 
-  Future<void> updateSelectedChipListByName(
-      {required String selectedChip}) async {
+  Future<void> updateSelectedChipListByName({required String selectedChip}) async {
     selectedChipText.value = selectedChip;
     await fetchHeadlines();
   }
@@ -153,7 +157,7 @@ class HomeController extends GetxController {
   Future<void> fetchHeadlines() async {
     isLoading.value = true;
     final queryParams = {
-      "country": selectedCountry.value.code,
+      "country": dataProvider.selectedCountry.value.code,
       "category": selectedChipText.value,
       "apiKey": kAPIKey,
     };
@@ -170,9 +174,8 @@ class HomeController extends GetxController {
     final queryParams = {
       "q": searchQuery.value,
       "apiKey": kAPIKey,
-      "sortBy":selectedSort.value,
+      "sortBy": selectedSort.value,
     };
-
 
     var response = await _userRegistrationApiCallEverything(queryParams);
     if (response != null) {
@@ -183,39 +186,39 @@ class HomeController extends GetxController {
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallHeadlines(
-      dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallHeadlines(dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getHeadlines(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}",
-          name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallEverything(
-      dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallEverything(dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getEverything(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}",
-          name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
   }
-  void openBottomSheet(BuildContext context){
-    showModalBottomSheet(context:context,
+
+  void openBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(kRadius*3)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(kRadius * 3)),
       ),
-      builder: (context) =>  SortBottomSheet(controller: this,),
+      builder: (context) => SortBottomSheet(
+        controller: this,
+      ),
     );
   }
 
@@ -223,6 +226,4 @@ class HomeController extends GetxController {
     this.selectedSort.value = selectedSort;
     await fetchEverything();
   }
-
-
 }

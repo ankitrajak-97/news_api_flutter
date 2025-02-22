@@ -40,7 +40,7 @@ class HomeView extends StatelessWidget {
             children: [
               // heading
               Obx(() {
-                var country = controller.selectedCountry.value;
+                var country = controller.dataProvider.selectedCountry.value;
                 return CustomAppBar(
                   title: controller.headTitle.value,
                   everythingButton: true,
