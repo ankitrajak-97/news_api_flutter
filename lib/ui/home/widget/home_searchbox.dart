@@ -19,6 +19,7 @@ class SearchBox extends StatelessWidget {
     return SizedBox(
       height: kHeight * 5,
       child: TextField(
+        textAlignVertical: TextAlignVertical.center,
         onChanged: (value) {
           // controller.searchQuery.value = value;
           onTextChanged(value);
@@ -29,6 +30,7 @@ class SearchBox extends StatelessWidget {
         },
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: kPadding),
           hintText: 'Search for news...',
           hintStyle: TextStyle(color: Colors.white70),
           prefixIcon: Icon(Icons.search, color: Colors.white54),

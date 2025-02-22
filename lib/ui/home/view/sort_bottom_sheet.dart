@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controller/home_controller.dart';
 
 class SortBottomSheet extends StatelessWidget {
-  final controller = Get.put(HomeController());
+  final HomeController controller;
 
-   SortBottomSheet({super.key,});
+  const SortBottomSheet({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -21,32 +23,34 @@ class SortBottomSheet extends StatelessWidget {
           // Heading
           Text(
             "Sort By",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: GoogleFonts.nanumGothic(color: Colors.black,fontSize:22.sp,
+                fontWeight: FontWeight.w900),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
-          // List of sort options without Obx
-          _buildSortOption("Newest First", "publishedAt"),
-          _buildSortOption("Relevancy", "relevancy"),
-          _buildSortOption("Popularity", "popularity")
+          // Using ListView.builder
+          Obx(() => ListView.builder(
+            shrinkWrap: true, // Important for using inside a Column
+            physics: NeverScrollableScrollPhysics(), // Prevents scrolling inside bottom sheet
+            itemCount: controller.sortList.length,
+            itemBuilder: (context, index) {
+              final title = controller.sortList[index];
+              // final isSelected = title == controller.selectedSort.value;
 
+              return RadioListTile(
+                title: Text(title.capitalizeFirst!,style: GoogleFonts.poppins( color: Colors.black87,
+                  fontSize: 14.0,),),
+                value: title,
+                groupValue: controller.selectedSort.value,
+                onChanged: (newValue) {
+                  controller.updateSort(newValue!);
+                },
+              );
+            },
+          )),
         ],
       ),
     );
   }
-
-  Widget _buildSortOption(String title, String value) {
-    return Obx(() => RadioListTile(
-      title: Text(title),
-      value: value,
-      groupValue: controller.selectedSort.value,
-    onChanged: (newValue) {
-      if (newValue != null) {
-        controller.updateSortAndFetch(
-            selectedSort: newValue); 
-        Get.back();
-      }
-    }
-    ));
-  }
 }
+

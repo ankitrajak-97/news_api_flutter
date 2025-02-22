@@ -9,10 +9,12 @@ import 'package:news_api/ui/country/model/country_model.dart';
 import 'package:news_api/ui/country/view/country_view.dart';
 import 'package:news_api/ui/home/view/sort_bottom_sheet.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api_adapter.dart';
 import '../../../api/model/base/base_response.dart';
+import '../../../shared_preference/shared_prefs_helper.dart';
 
 class HomeController extends GetxController {
   final _api = ApiAdapter();
@@ -25,14 +27,15 @@ class HomeController extends GetxController {
     'sports',
     'others'
   ].obs;
+  final sortList = ['publishedAt', 'relevancy', 'popularity'].obs;
 
   final selectedChipText = ''.obs;
   final selectedCountry = countries.first.obs; // Default selected country
-  final selectedSort = 'publishedAt'.obs;
+  final selectedSort = ''.obs;
 
   final articles = <ArticleResponse>[].obs;
   final isLoading = true.obs;
-  final headTitle = 'Headlines'.obs;
+  final headTitle = ''.obs;
   final headlineTitle = 'Headlines';
   final everyTitle = 'Everything';
   final searchQuery = ''.obs;
@@ -45,9 +48,13 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
     selectedChipText.value = chipList.first;
+    selectedSort.value = sortList.first;
+    String? lastViewedTab = Get.arguments as String?;
+    headTitle.value = lastViewedTab ?? 'headlines'; // Set default to headlines
+
   }
 
   @override
@@ -55,7 +62,14 @@ class HomeController extends GetxController {
     super.onReady();
     log("controller onReady");
 
-    await fetchHeadlines();
+    final prefs = await SharedPreferences.getInstance();
+    String lastTab = prefs.getString('lastViewedTab') ?? 'headlines';
+
+    if (lastTab == 'headlines') {
+      await fetchHeadlines(); // ✅ Only fetch if last viewed tab was "Headlines"
+    }
+
+    // await fetchHeadlines();
 
     // to handle db operation or api calls only if required
   }
@@ -72,18 +86,26 @@ class HomeController extends GetxController {
     _onUpdateCountry(country: res);
   }
 
-  void toggleNewsMode() {
+
+  void toggleNewsMode() async {
     articles.clear();
+    final prefs = await SharedPreferences.getInstance();
+
     if (headTitle.value == headlineTitle) {
       headTitle.value = everyTitle;
       errorMsg.value = "Please type something to search for";
-      // fetchEverything();
+
+
+      await prefs.setString('lastViewedTab', 'everything');
     } else {
       headTitle.value = headlineTitle;
       errorMsg.value = "No Data found ";
       fetchHeadlines();
+
+      await prefs.setString('lastViewedTab', 'headlines');
     }
   }
+
 
   bool shouldShowCategoryChips() {
     return headTitle.value == headlineTitle;
@@ -193,13 +215,13 @@ class HomeController extends GetxController {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(kRadius*3)),
       ),
-      builder: (context) =>  SortBottomSheet(),
+      builder: (context) =>  SortBottomSheet(controller: this,),
     );
   }
 
   Future<void> updateSortAndFetch({required String selectedSort}) async {
-    this.selectedSort.value = selectedSort; // ✅ Update selected sort option
-    await fetchEverything(); // ✅ Fetch news with sorting
+    this.selectedSort.value = selectedSort;
+    await fetchEverything();
   }
 
 
