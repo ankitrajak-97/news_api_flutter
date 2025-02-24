@@ -11,13 +11,14 @@ class CustomAppBar extends StatelessWidget {
   final Widget? trailingWidget;
   final bool everythingButton;
   final VoidCallback? onTap;
-  const CustomAppBar(
-      {super.key,
-      required this.title,
-      this.showTrailing = true,
-      this.trailingWidget,
-      this.everythingButton = false,
-      this.onTap});
+  const CustomAppBar({
+    super.key,
+    required this.title,
+    this.showTrailing = true,
+    this.trailingWidget,
+    this.everythingButton = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,8 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 title,
@@ -39,13 +42,13 @@ class CustomAppBar extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              if (everythingButton) ...[
-                SizedBox(width: 10),
-                IconButton(
-                  onPressed: onTap,
-                  icon: Icon(Icons.toggle_off_rounded, color: Colors.white54),
-                ),
-              ],
+              SizedBox(
+                width: kWidth,
+              ),
+              IconButton(
+                onPressed: onTap,
+                icon: Icon(Icons.sync),
+              ),
             ],
           ),
           Visibility(

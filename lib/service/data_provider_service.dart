@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:news_api/shared_preference/shared_pref_key.dart';
 import 'package:news_api/shared_preference/shared_prefs_helper.dart';
 import 'package:news_api/ui/country/model/country_model.dart';
+import 'package:news_api/ui/home/constants/home_constants.dart';
 
 class DataProviderService extends GetxService {
   final _name = "DataProviderService";
   final pref = SharedPref();
 
   final selectedCountry = countries.first.obs; // Default selected country
-  final selectedHeadTitle = "Headlines".obs;
+  final selectedHeadTitle = kPageTitle.first.obs;
 
   @override
   void onReady() async {
@@ -52,20 +53,24 @@ class DataProviderService extends GetxService {
     selectedCountry.value = country;
   }
 
-  //==================================
-  // TOP HEADLINES OR EVERYTHING PART
-  //==================================
+  //=================================================
+  // (API CALL TYPE)TOP HEADLINES OR EVERYTHING PART
+  //=================================================
 
   Future<void> saveHeadTitle(String title) async {
-    await pref.setString(key: kPrefHeadTitle, value: title);
-    selectedHeadTitle.value = title;
+    var res = await pref.setString(key: kPrefHeadTitle, value: title);
+    if (res) updateApiHeadline(title: title);
     log("Saved HeadTitle: $title", name: _name);
   }
 
   String getHeadTitle() {
     var title = pref.getString(key: kPrefHeadTitle) ?? "Headlines";
-    selectedHeadTitle.value = title;
+    updateApiHeadline(title: title);
     log("Retrieved HeadTitle: $title", name: _name);
     return title;
+  }
+
+  void updateApiHeadline({required String title}) {
+    selectedHeadTitle.value = title;
   }
 }

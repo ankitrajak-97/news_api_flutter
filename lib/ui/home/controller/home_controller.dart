@@ -14,57 +14,37 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api_adapter.dart';
 import '../../../api/model/base/base_response.dart';
+import '../constants/home_constants.dart';
 
 class HomeController extends GetxController {
   final dataProvider = Get.find<DataProviderService>();
   final _name = "HomeController";
   final _api = ApiAdapter();
-  final chipList = [
-    'business',
-    'entertainment',
-    'health',
-    'science',
-    'general',
-    'sports',
-    'others'
-  ].obs;
-  final sortList = ['publishedAt', 'relevancy', 'popularity'].obs;
-
-  final selectedChipText = ''.obs;
-
-  final selectedSort = ''.obs;
-
+  final chipList = kChipList.obs;
+  final sortList = kSortList.obs;
   final articles = <ArticleResponse>[].obs;
+
   final isLoading = true.obs;
-  final headTitle = 'Headlines'.obs;
-  final headlineTitle = 'Headlines';
-  final everyTitle = 'Everything';
+  final headTitle = kPageTitle.first.obs;
   final searchQuery = ''.obs;
   final errorMsg = 'No Data found'.obs;
+  final selectedChipText = ''.obs;
+  final selectedSort = ''.obs;
 
   @override
   void onInit() async {
     super.onInit();
+
     selectedChipText.value = chipList.first;
     selectedSort.value = sortList.first;
-    String? lastViewedTab = Get.arguments as String?;
-    headTitle.value =
-        lastViewedTab ?? headlineTitle; // Set default to headlines
+
+    headTitle.value = kPageTitle.first;
   }
 
   @override
   Future<void> onReady() async {
     super.onReady();
     log("controller onReady");
-
-    // final prefs = await SharedPreferences.getInstance();
-    // String lastTab = prefs.getString('lastViewedTab') ?? 'Headlines';
-    //
-    // if (lastTab == 'Headlines') {
-    //   await fetchHeadlines(); //
-    // }
-
-    // doApiCall()
 
     await fetchHeadlines();
 
@@ -134,24 +114,24 @@ class HomeController extends GetxController {
   void toggleNewsMode() async {
     articles.clear();
 
-    if (dataProvider.selectedHeadTitle.value == headlineTitle) {
-      dataProvider.saveHeadTitle(everyTitle); // Save new state
-      headTitle.value = everyTitle;
+    if (dataProvider.selectedHeadTitle.value == kPageTitle.first) {
+      dataProvider.saveHeadTitle(kPageTitle.last); // Save new state
+      headTitle.value = kPageTitle.last;
       errorMsg.value = "Please type something to search for";
     } else {
-      dataProvider.saveHeadTitle(headlineTitle);
-      headTitle.value = headlineTitle;
+      dataProvider.saveHeadTitle(kPageTitle.first);
+      headTitle.value = kPageTitle.first;
       errorMsg.value = "No Data found";
       fetchHeadlines();
     }
   }
 
   bool shouldShowCategoryChips() {
-    return headTitle.value == headlineTitle;
+    return headTitle.value == kPageTitle.first;
   }
 
   bool shouldShowHomeCountryChips() {
-    return headTitle.value == headlineTitle;
+    return headTitle.value == kPageTitle.first;
   }
 
   @override
@@ -161,8 +141,7 @@ class HomeController extends GetxController {
     log("controller onClose");
   }
 
-  Future<void> updateSelectedChipListByName(
-      {required String selectedChip}) async {
+  Future<void> updateSelectedChipListByName({required String selectedChip}) async {
     selectedChipText.value = selectedChip;
     await fetchHeadlines();
   }
@@ -221,28 +200,24 @@ class HomeController extends GetxController {
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallHeadlines(
-      dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallHeadlines(dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getHeadlines(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}",
-          name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallEverything(
-      dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallEverything(dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getEverything(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}",
-          name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
