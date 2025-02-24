@@ -35,8 +35,7 @@ class CountryView extends StatelessWidget {
                 return ListView.builder(
                   itemCount: controller.countryList.length,
                   itemBuilder: (context, index) {
-                    final country =
-                        controller.countryList[index]; // Fetch country object
+                    final country = controller.countryList[index]; // Fetch country object
                     return ListTile(
                       leading: SvgPicture.asset(
                         country.flagPath, // Display country flag

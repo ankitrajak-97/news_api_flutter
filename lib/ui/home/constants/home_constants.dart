@@ -2,4 +2,4 @@ const kChipList = ['business', 'entertainment', 'health', 'science', 'general', 
 
 const kSortList = ['publishedAt', 'relevancy', 'popularity'];
 
-const kPageTitle = ['Headlines', 'Everyting'];
+const kPageTitle = ['Headlines', 'Everything'];

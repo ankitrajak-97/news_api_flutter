@@ -35,6 +35,8 @@ class HomeController extends GetxController {
   void onInit() async {
     super.onInit();
 
+    log("HeadTitle: ${dataProvider.getHeadTitle()}", name: _name);
+
     selectedChipText.value = chipList.first;
     selectedSort.value = sortList.first;
 
@@ -46,7 +48,8 @@ class HomeController extends GetxController {
     super.onReady();
     log("controller onReady");
 
-    await fetchHeadlines();
+    // await fetchHeadlines();
+    doApiCall();
 
     // to handle db operation or api calls only if required
   }
@@ -62,16 +65,17 @@ class HomeController extends GetxController {
   //   /// }
   // }
 
-  // void doApiCall() {
-  //   String selectedTab = dataProvider.getHeadTitle();
-  //
-  //   if (selectedTab == everyTitle) {
-  //     errorMsg.value = "Please type something to search for";
-  //     articles.clear();
-  //   } else {
-  //     fetchHeadlines();
-  //   }
-  // }
+  void doApiCall() {
+    headTitle.value = dataProvider.getHeadTitle();
+
+    if (headTitle.value == kPageTitle.last) {
+      errorMsg.value = "Please type something to search for";
+      articles.clear();
+      isLoading.value = false;
+    } else {
+      fetchHeadlines();
+    }
+  }
 
   void updateSort(String newSort) {
     selectedSort.value = newSort;
@@ -92,24 +96,6 @@ class HomeController extends GetxController {
     dataProvider.getCountry();
     _onUpdateCountry(country: res);
   }
-
-  // void toggleNewsMode() async {
-  //   articles.clear();
-  //   final prefs = await SharedPreferences.getInstance();
-  //
-  //   if (headTitle.value == headlineTitle) {
-  //     headTitle.value = everyTitle;
-  //     errorMsg.value = "Please type something to search for";
-  //
-  //     await prefs.setString('lastViewedTab', 'Everything');
-  //   } else {
-  //     headTitle.value = headlineTitle;
-  //     errorMsg.value = "No Data found ";
-  //     fetchHeadlines();
-  //
-  //     await prefs.setString('lastViewedTab', 'Headlines');
-  //   }
-  // }
 
   void toggleNewsMode() async {
     articles.clear();
@@ -134,19 +120,13 @@ class HomeController extends GetxController {
     return headTitle.value == kPageTitle.first;
   }
 
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
-    log("controller onClose");
-  }
-
   Future<void> updateSelectedChipListByName({required String selectedChip}) async {
     selectedChipText.value = selectedChip;
     await fetchHeadlines();
   }
 
   Future<void> updateSelectedChipListByIndex({required int index}) async {
+    if (selectedChipText.value == chipList[index]) return;
     selectedChipText.value = chipList[index];
     chipList.refresh();
     await fetchHeadlines();

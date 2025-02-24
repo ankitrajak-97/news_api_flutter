@@ -9,6 +9,7 @@ import 'package:news_api/utils/style/app_dimen.dart';
 
 import '../../../components/custom_appbar.dart';
 import '../../../utils/style/app_color.dart';
+import '../constants/home_constants.dart';
 import '../controller/home_controller.dart';
 import '../widget/home_country_chip.dart';
 import '../widget/home_horizontal_category.dart';
@@ -86,7 +87,13 @@ class HomeView extends StatelessWidget {
                       },
                     ),
                     visible: controller.shouldShowCategoryChips(),
-                    child: HomeHorizontalCategory(controller: controller),
+                    child: HomeHorizontalCategory(
+                      chipList: controller.chipList,
+                      currentSelectedChip: controller.selectedChipText.value,
+                      onSelectIndex: (index) {
+                        controller.updateSelectedChipListByIndex(index: index);
+                      },
+                    ),
                   );
                 }),
               ),
@@ -106,16 +113,15 @@ class HomeView extends StatelessWidget {
                       child: HomeLoader(),
                     ),
                     child: Visibility(
+                      visible: controller.articles.isEmpty && controller.headTitle.value == kPageTitle.last,
                       replacement: ListView.separated(
                         itemBuilder: (context, index) {
                           final imageUrl = controller.articles[index].urlImg;
                           final author = controller.articles[index].author;
                           final title = controller.articles[index].title;
                           final desc = controller.articles[index].desc;
-                          final publishedAt =
-                              controller.articles[index].publishedAt;
-                          final url = controller.articles[index].url ??
-                              "https://www.google.com";
+                          final publishedAt = controller.articles[index].publishedAt;
+                          final url = controller.articles[index].url ?? "https://www.google.com";
 
                           return HomeListItem(
                             imageUrl: imageUrl,
@@ -137,7 +143,6 @@ class HomeView extends StatelessWidget {
                         },
                         itemCount: controller.articles.length,
                       ),
-                      visible: controller.articles.isEmpty,
                       child: Center(
                         child: Text(
                           controller.errorMsg.value,

@@ -1,43 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
 
-import '../controller/home_controller.dart';
 import '../widget/home_chip.dart';
 
 class HomeHorizontalCategory extends StatelessWidget {
+  final List<String> chipList;
+  final String currentSelectedChip;
+  final ValueChanged<int> onSelectIndex;
   const HomeHorizontalCategory({
     super.key,
-    required this.controller,
+    required this.chipList,
+    required this.currentSelectedChip,
+    required this.onSelectIndex,
   });
-
-  final HomeController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return ListView.separated(
-        physics: BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: controller.chipList.length,
-        itemBuilder: (context, index) {
-          // 0 1 2 3 4 5 6
-          final title = controller.chipList[index];
-          final isSelected = controller.chipList[index] == controller.selectedChipText.value;
-          return HomeCategoryChip(
-            chipTitle: title,
-            isSelected: isSelected,
-            onTap: () {
-              controller.updateSelectedChipListByIndex(index: index);
-            },
-          );
-        },
-        separatorBuilder: (context, index) {
-          return SizedBox(
-            width: kWidth * 2,
-          );
-        },
-      );
-    });
+    return ListView.separated(
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemCount: chipList.length,
+      itemBuilder: (context, index) {
+        // 0 1 2 3 4 5 6
+        final title = chipList[index];
+        // final isSelected = controller.chipList[index] == controller.selectedChipText.value;
+        final isSelected = chipList[index] == currentSelectedChip;
+        return HomeCategoryChip(
+          chipTitle: title,
+          isSelected: isSelected,
+          // onTap: () {
+          //   // controller.updateSelectedChipListByIndex(index: index);
+          // },
+          onTap: () {
+            onSelectIndex(index);
+          },
+        );
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          width: kWidth * 2,
+        );
+      },
+    );
   }
 }
