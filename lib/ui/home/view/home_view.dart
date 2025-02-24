@@ -49,10 +49,18 @@ class HomeView extends StatelessWidget {
                   },
                   trailingWidget: Visibility(
                     visible: controller.shouldShowHomeCountryChips(),
-                    replacement: SizedBox(width: kWidth*4,height: kHeight*5,
-                    child: IconButton(onPressed: (){
-                      controller.openBottomSheet(context);
-                    }, icon:const  FaIcon(FontAwesomeIcons.sort,color: Colors.white,)), ),
+                    replacement: SizedBox(
+                      width: kWidth * 4,
+                      height: kHeight * 5,
+                      child: IconButton(
+                          onPressed: () {
+                            controller.openBottomSheet(context);
+                          },
+                          icon: const FaIcon(
+                            FontAwesomeIcons.sort,
+                            color: Colors.white,
+                          )),
+                    ),
                     child: HomeCountryChip(
                       onCountryButtonClick: controller.routeToCountryView,
                       shortName: country.code,

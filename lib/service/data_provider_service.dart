@@ -10,6 +10,7 @@ class DataProviderService extends GetxService {
   final pref = SharedPref();
 
   final selectedCountry = countries.first.obs; // Default selected country
+  final selectedHeadTitle = "Headlines".obs;
 
   @override
   void onReady() async {
@@ -18,10 +19,11 @@ class DataProviderService extends GetxService {
     await pref.init();
 
     getCountry();
+    getHeadTitle();
   }
 
   //===============================
-  // STORE AND RETRIVE SHARED PREF
+  // STORE AND RETRIEVE SHARED PREF
   //===============================
 
   Future<bool> saveCountry({required String countryCode}) async {
@@ -33,7 +35,7 @@ class DataProviderService extends GetxService {
 
   void getCountry() {
     var cCode = pref.getString(key: kPrefCountryCode);
-    log("getContry : $cCode", name: _name);
+    log("getCountry : $cCode", name: _name);
     updateSelectedCountry(countryCode: cCode);
   }
 
@@ -53,4 +55,17 @@ class DataProviderService extends GetxService {
   //==================================
   // TOP HEADLINES OR EVERYTHING PART
   //==================================
+
+  Future<void> saveHeadTitle(String title) async {
+    await pref.setString(key: kPrefHeadTitle, value: title);
+    selectedHeadTitle.value = title;
+    log("Saved HeadTitle: $title", name: _name);
+  }
+
+  String getHeadTitle() {
+    var title = pref.getString(key: kPrefHeadTitle) ?? "Headlines";
+    selectedHeadTitle.value = title;
+    log("Retrieved HeadTitle: $title", name: _name);
+    return title;
+  }
 }

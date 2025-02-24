@@ -10,7 +10,6 @@ import 'package:news_api/ui/country/model/country_model.dart';
 import 'package:news_api/ui/country/view/country_view.dart';
 import 'package:news_api/ui/home/view/sort_bottom_sheet.dart';
 import 'package:news_api/utils/style/app_dimen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/api_adapter.dart';
@@ -20,7 +19,15 @@ class HomeController extends GetxController {
   final dataProvider = Get.find<DataProviderService>();
   final _name = "HomeController";
   final _api = ApiAdapter();
-  final chipList = ['business', 'entertainment', 'health', 'science', 'general', 'sports', 'others'].obs;
+  final chipList = [
+    'business',
+    'entertainment',
+    'health',
+    'science',
+    'general',
+    'sports',
+    'others'
+  ].obs;
   final sortList = ['publishedAt', 'relevancy', 'popularity'].obs;
 
   final selectedChipText = ''.obs;
@@ -29,11 +36,11 @@ class HomeController extends GetxController {
 
   final articles = <ArticleResponse>[].obs;
   final isLoading = true.obs;
-  final headTitle = ''.obs;
+  final headTitle = 'Headlines'.obs;
   final headlineTitle = 'Headlines';
   final everyTitle = 'Everything';
   final searchQuery = ''.obs;
-  final errorMsg = ''.obs;
+  final errorMsg = 'No Data found'.obs;
 
   @override
   void onInit() async {
@@ -41,7 +48,8 @@ class HomeController extends GetxController {
     selectedChipText.value = chipList.first;
     selectedSort.value = sortList.first;
     String? lastViewedTab = Get.arguments as String?;
-    headTitle.value = lastViewedTab ?? 'headlines'; // Set default to headlines
+    headTitle.value =
+        lastViewedTab ?? headlineTitle; // Set default to headlines
   }
 
   @override
@@ -49,30 +57,41 @@ class HomeController extends GetxController {
     super.onReady();
     log("controller onReady");
 
-    final prefs = await SharedPreferences.getInstance();
-    String lastTab = prefs.getString('lastViewedTab') ?? 'headlines';
-
-    if (lastTab == 'headlines') {
-      await fetchHeadlines(); // ✅ Only fetch if last viewed tab was "Headlines"
-    }
+    // final prefs = await SharedPreferences.getInstance();
+    // String lastTab = prefs.getString('lastViewedTab') ?? 'Headlines';
+    //
+    // if (lastTab == 'Headlines') {
+    //   await fetchHeadlines(); //
+    // }
 
     // doApiCall()
 
-    // await fetchHeadlines();
+    await fetchHeadlines();
 
     // to handle db operation or api calls only if required
   }
 
-  void doApiCall() {
-    /// everything / headlines save and get
-    /// in data provider class, there will be a variblable which one is the fetch (everything / headlines)
-    /// dataprovier.thatvariablename.value
-    /// if(dataprovier.thatvariablename.value = "everything"){
-    ///   doFetchEverythingApiCall()
-    /// } else {
-    ///   doHeadlineApiCall()
-    /// }
-  }
+  // void doApiCall() {
+  //   /// everything / headlines save and get
+  //   /// in data provider class, there will be a variblable which one is the fetch (everything / headlines)
+  //   /// dataprovier.thatvariablename.value
+  //   /// if(dataprovier.thatvariablename.value = "everything"){
+  //   ///   doFetchEverythingApiCall()
+  //   /// } else {
+  //   ///   doHeadlineApiCall()
+  //   /// }
+  // }
+
+  // void doApiCall() {
+  //   String selectedTab = dataProvider.getHeadTitle();
+  //
+  //   if (selectedTab == everyTitle) {
+  //     errorMsg.value = "Please type something to search for";
+  //     articles.clear();
+  //   } else {
+  //     fetchHeadlines();
+  //   }
+  // }
 
   void updateSort(String newSort) {
     selectedSort.value = newSort;
@@ -94,21 +113,36 @@ class HomeController extends GetxController {
     _onUpdateCountry(country: res);
   }
 
+  // void toggleNewsMode() async {
+  //   articles.clear();
+  //   final prefs = await SharedPreferences.getInstance();
+  //
+  //   if (headTitle.value == headlineTitle) {
+  //     headTitle.value = everyTitle;
+  //     errorMsg.value = "Please type something to search for";
+  //
+  //     await prefs.setString('lastViewedTab', 'Everything');
+  //   } else {
+  //     headTitle.value = headlineTitle;
+  //     errorMsg.value = "No Data found ";
+  //     fetchHeadlines();
+  //
+  //     await prefs.setString('lastViewedTab', 'Headlines');
+  //   }
+  // }
+
   void toggleNewsMode() async {
     articles.clear();
-    final prefs = await SharedPreferences.getInstance();
 
-    if (headTitle.value == headlineTitle) {
+    if (dataProvider.selectedHeadTitle.value == headlineTitle) {
+      dataProvider.saveHeadTitle(everyTitle); // Save new state
       headTitle.value = everyTitle;
       errorMsg.value = "Please type something to search for";
-
-      await prefs.setString('lastViewedTab', 'everything');
     } else {
+      dataProvider.saveHeadTitle(headlineTitle);
       headTitle.value = headlineTitle;
-      errorMsg.value = "No Data found ";
+      errorMsg.value = "No Data found";
       fetchHeadlines();
-
-      await prefs.setString('lastViewedTab', 'headlines');
     }
   }
 
@@ -127,7 +161,8 @@ class HomeController extends GetxController {
     log("controller onClose");
   }
 
-  Future<void> updateSelectedChipListByName({required String selectedChip}) async {
+  Future<void> updateSelectedChipListByName(
+      {required String selectedChip}) async {
     selectedChipText.value = selectedChip;
     await fetchHeadlines();
   }
@@ -186,24 +221,28 @@ class HomeController extends GetxController {
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallHeadlines(dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallHeadlines(
+      dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getHeadlines(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}",
+          name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
   }
 
   // Handle the API call only for headlines
-  Future<BaseResponse?> _userRegistrationApiCallEverything(dynamic queryParams) async {
+  Future<BaseResponse?> _userRegistrationApiCallEverything(
+      dynamic queryParams) async {
     BaseResponse? response;
     try {
       response = await _api.getEverything(params: queryParams);
     } on DioException catch (e) {
-      log("Status Code: ${e.response?.statusCode ?? "NA"}", name: "Error", stackTrace: e.stackTrace);
+      log("Status Code: ${e.response?.statusCode ?? "NA"}",
+          name: "Error", stackTrace: e.stackTrace);
       response = null;
     }
     return response;
